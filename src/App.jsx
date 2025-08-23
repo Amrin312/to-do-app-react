@@ -2,6 +2,13 @@ import react, { useState } from 'react'
 import { Trash2, SquarePen, Plus } from 'lucide-react';
 import {useForm} from 'react-hook-form'
 import toast, { Toaster } from 'react-hot-toast';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
 function App() {
 
@@ -68,34 +75,87 @@ const handleStatusToggle = (id) => {
 };
 
   return (
-    <div className="flex items-center flex-col h-dvw rounded md:mx-auto w-full border lg:w-1/2 lg:shadow-lg lg:shadow-black-900">
+    <div className="flex items-center flex-col h-screen rounded md:mx-auto w-full border lg:shadow-lg lg:shadow-black-900">
           <Toaster />
 
       <div className="w-full h-15 md:h-20 bg-teal-300 flex justify-between p-4 items-center">
-        <h1 className="text-4xl text-white">To Do App</h1>
-        <button onClick={handleOpenModal} className="p-3 rounded bg-white text-emerald "> <Plus /></button>
+        <h1 className="text-2xl lg:text-4xl text-white">To Do App</h1>
+        <button onClick={handleOpenModal} className="p-1 lg:p-3 flex gap-1 rounded bg-white text-emerald"> <Plus /> Add Task</button>
       </div>
 
-      <div className="w-4/5 mt-8">
-          {tasks && 
-            tasks.map((task, index) => (
-              <div className="flex justify-between rounded p-3 bg-teal-300 text-white mb-6 cursor-pointer" key={index}>
+      <TableContainer component={Paper} sx={{ width: "90%", margin: "60px auto" }}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell className="font-extrabold text-base">Task Name</TableCell>
+                <TableCell className="font-extrabold">Task Description</TableCell>
+                <TableCell className="font-extrabold">Task status</TableCell>
+                <TableCell className="font-extrabold">Action</TableCell>
+              </TableRow>
+            </TableHead>
 
-                  <div className="flex gap-5 justify-center items-center">
-                    <input type="checkbox" className="checked:bg-blue-500 w-5 h-5" 
-                    checked={task['status'] == 'Completed'} onChange={() => handleStatusToggle(index)}  />
-                    <div className={task['status'] == 'Completed' ? 'line-through decoration-red-50 text-xl' : 'text-xl' }>{task['taskName']}</div>
-                  </div>
+            <TableBody>
+              {tasks.length > 0 ? (
+                tasks.map((task, index) => (
+                  <TableRow
+                    key={index}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell align="left">
+                      <div className="flex gap-5 justify-center items-center">
+                        <input
+                          type="checkbox"
+                          className="checked:bg-blue-500 w-5 h-5"
+                          checked={task["status"] === "Completed"}
+                          onChange={() => handleStatusToggle(index)}
+                        />
+                        <div
+                          className={
+                            task["status"] === "Completed"
+                              ? "line-through decoration-black-500 text-xl"
+                              : "text-xl"
+                          }
+                        >
+                          {task["taskName"]}
+                        </div>
+                      </div>
+                    </TableCell>
 
-                  <div className="flex gap-4">
-                    <button type="button" onClick={() => handleEdit(index)} className="bg-yellow-400 text-white p-1 rounded hover:bg-yellow-500"><SquarePen  /></button>
+                    <TableCell align="left">{task["description"]}</TableCell>
+                    <TableCell align="left">{task["status"]}</TableCell>
+                    <TableCell align="left">
+                      <div className="flex gap-4">
+                        <button
+                          type="button"
+                          onClick={() => handleEdit(index)}
+                          className="bg-yellow-400 text-white p-1 rounded hover:bg-yellow-500"
+                        >
+                          <SquarePen />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(index)}
+                          className="bg-red-500 text-white p-1 rounded hover:bg-red-600"
+                        >
+                          <Trash2 />
+                        </button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={4} align="center">
+                    No tasks found
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
 
-                    <button type="button" onClick={() => handleDelete(index)} className="bg-red-500 text-white p-1 rounded hover:bg-red-600"><Trash2 /></button>
-                  </div>
-                  
-              </div>
-            ))}
-      </div>
+          </Table>
+      </TableContainer>
+
+      
 
       {showModal && (
         <div className="fixed bg-black/50 min-h-screen z-10 w-screen flex justify-center items-center">
