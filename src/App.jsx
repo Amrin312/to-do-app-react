@@ -9,6 +9,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Tooltip from "@mui/material/Tooltip";
+
 
 function App() {
 
@@ -84,13 +86,21 @@ const handleStatusToggle = (id) => {
       </div>
 
       <TableContainer component={Paper} sx={{ width: "90%", margin: "60px auto" }}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <Table   sx={{
+              minWidth: 650,
+              "& .MuiTableCell-root": { padding: "12px 16px" }, // tighter spacing
+              "& .MuiTableHead-root .MuiTableCell-root": {
+                fontWeight: "bold",
+                backgroundColor: "#c8cccfff", 
+              }
+            }}
+            aria-label="styled table">
             <TableHead>
               <TableRow>
-                <TableCell className="font-extrabold text-base">Task Name</TableCell>
-                <TableCell className="font-extrabold">Task Description</TableCell>
-                <TableCell className="font-extrabold">Task status</TableCell>
-                <TableCell className="font-extrabold">Action</TableCell>
+                <TableCell sx={{ width: "25%" }}>Task Name</TableCell>
+                <TableCell sx={{ width: "40%" }}>Task Description</TableCell>
+                <TableCell sx={{ width: "20%" }}>Task status</TableCell>
+                <TableCell sx={{ width: "15%" }}>Action</TableCell>
               </TableRow>
             </TableHead>
 
@@ -99,10 +109,13 @@ const handleStatusToggle = (id) => {
                 tasks.map((task, index) => (
                   <TableRow
                     key={index}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    sx={{
+                      "&:nth-of-type(odd)": { backgroundColor: "#f8fafc" }, 
+                      "&:last-child td, &:last-child th": { border: 0 },
+                    }}
                   >
                     <TableCell align="left">
-                      <div className="flex gap-5 justify-center items-center">
+                      <div className="flex gap-5 justify-start items-center text-left">
                         <input
                           type="checkbox"
                           className="checked:bg-blue-500 w-5 h-5"
@@ -125,20 +138,26 @@ const handleStatusToggle = (id) => {
                     <TableCell align="left">{task["status"]}</TableCell>
                     <TableCell align="left">
                       <div className="flex gap-4">
-                        <button
-                          type="button"
-                          onClick={() => handleEdit(index)}
-                          className="bg-yellow-400 text-white p-1 rounded hover:bg-yellow-500"
-                        >
-                          <SquarePen />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(index)}
-                          className="bg-red-500 text-white p-1 rounded hover:bg-red-600"
-                        >
-                          <Trash2 />
-                        </button>
+                        <Tooltip title="Edit">
+                          <button
+                            type="button"
+                            onClick={() => handleEdit(index)}
+                            className="bg-yellow-400 text-white p-1 rounded hover:bg-yellow-500"
+                          >
+                            <SquarePen />
+                          </button>
+                        </Tooltip>
+                        
+                        <Tooltip title="Delete">
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(index)}
+                            className="bg-red-500 text-white p-1 rounded hover:bg-red-600"
+                          >
+                            <Trash2 />
+                          </button>
+                        </Tooltip>
+                        
                       </div>
                     </TableCell>
                   </TableRow>
@@ -146,7 +165,7 @@ const handleStatusToggle = (id) => {
               ) : (
                 <TableRow>
                   <TableCell colSpan={4} align="center">
-                    No tasks found
+                    <div className="text-gray-500 py-6 italic">No tasks found. Add one to get started!</div>
                   </TableCell>
                 </TableRow>
               )}
